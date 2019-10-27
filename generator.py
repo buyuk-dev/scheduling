@@ -39,7 +39,7 @@ def main(opts):
     """
     tasks = [t for t in random_tasks_generator(opts)]
 
-    print(f"{opts.n}")
+    print(f"{opts.m}")
     for t in tasks:
         print(f"{t.r} {t.p} {t.d}")
 
@@ -51,6 +51,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, help="number of tasks")
     parser.add_argument("--dmax", type=int, help="upper due time limit")
+    parser.add_argument("--m", type=int, help="processors number")
     parser.add_argument("--pmax", type=int, help="max task length")
     parser.add_argument("--plot", action="store_true", help="plot generated tasks")
     main(parser.parse_args())
