@@ -3,28 +3,33 @@
 
 import argparse
 import random
+from collections import namedtuple
 from matplotlib import pyplot
 
 
-def random_tasks_generator(n, rmin, dmax, pmax):
+Task = namedtuple("Task", ["r", "p", "d"])
+
+
+def random_tasks_generator(opts):
     """ random tasks generator
     """
-    for i in range(n):
-        p = random.randint(1, pmax)
-        r = random.randint(rmin, dmax - p)
+    for i in range(opts.n):
+        p = random.randint(1, opts.pmax)
+        r = random.randint(0, opts.dmax - p)
 
-        dmax = min(dmax, int((r + p) * 1.25))
-        d = random.randint(r + p, dmax)
+        dmax = min(opts.dmax, int((r + p) * 1.25))
+        d = random.randint(r + p, opts.dmax)
 
-        yield r, p, d
+        yield Task(r, p, d)
 
 
 def plot(tasks):
     """ show tasks on a graph
     """
-    for k, (r, p, d) in enumerate(tasks):
-        x = [r, r + p, d]
+    for k, t in enumerate(tasks):
+        x = [t.r, t.r + t.p, t.d]
         y = [k] * len(x)
+
         pyplot.plot(x, y, marker="o")
     pyplot.show()
 
@@ -32,12 +37,11 @@ def plot(tasks):
 def main(opts):
     """ generate random tasks for the given parameters
     """
-    gen = random_tasks_generator(opts.n, opts.rmin, opts.dmax, opts.pmax)
-    tasks = [t for t in gen]
+    tasks = [t for t in random_tasks_generator(opts)]
 
-    print(opts.n)
+    print(f"{opts.n}")
     for t in tasks:
-        print(f"{t[0]} {t[1]} {t[2]}")
+        print(f"{t.r} {t.p} {t.d}")
 
     if opts.plot:
         plot(tasks)
@@ -46,13 +50,7 @@ def main(opts):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, help="number of tasks")
-    parser.add_argument("--rmin", type=int, help="lower ready time limit")
     parser.add_argument("--dmax", type=int, help="upper due time limit")
     parser.add_argument("--pmax", type=int, help="max task length")
     parser.add_argument("--plot", action="store_true", help="plot generated tasks")
-    opts = parser.parse_args()
-
-    if opts.pmax is None:
-        opts.pmax = opts.dmax
-
-    main(opts)
+    main(parser.parse_args())
