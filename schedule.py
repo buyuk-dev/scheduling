@@ -6,63 +6,86 @@ from matplotlib import pyplot as plt
 
 
 class Task:
-    def __init__(self, line):
-        p, r, d = [int(x) for x in line.split()]
-        self.p = p
+    """ Task consists of:
+        r - ready time
+        p - task length
+        d - due time
+    """
+
+    def __init__(self, r, p, d):
         self.r = r
+        self.p = p
         self.d = d
-        self.procid = -1
+        self.pid = -1
+        self.start = -1
+
+    def delay(self):
+        assert self.start >= 0, "Cannot compute delay of unscheduled task."
+        return max(0, self.start + self.p - self.d)
 
     def __str__(self):
-        return f"{self.p} {self.r} {self.d} {self.procid}"
+        return f"{self.r} {self.p} {self.d}"
+
+    @classmethod
+    def from_string(cls, string):
+        return cls(*[int(x) for x in string.split()])
 
 
 class Instance:
-    pass
+    """ Instance consists of:
+        m - number of processing machines
+        n - number of tasks
+        tasks - list of tasks to schedule
+    """
 
+    def __init__(self, m, tasks):
+        self.m = m
+        self.n = len(tasks)
+        self.tasks = tasks
 
-def read_instance(path):
-    with open(path, "r") as f:
-        lines = f.readlines()
-        x = Instance()
-        x.n = int(lines[0])
-        x.tasks = [Task(l) for l in lines[1:]]
-        return x
+    @classmethod
+    def from_file(cls, path):
+        with open(path, "r") as f:
+            lines = f.readlines()
+            tasks = [Task.from_string(l) for l in lines[1:]]
+            return cls(int(lines[0]), tasks)
 
 
 def schedule(x):
+    """ Greedy scheduling in ready time order.
+    """
     proc_time = [0, 0, 0, 0]
     for t in sorted(x.tasks, key=lambda t: t.r):
-        nextproc = proc_time.index(min(proc_time))
-        t.procid = nextproc
-        t.start = max(proc_time[nextproc], t.r)
-        proc_time[nextproc] = t.start + t.p
+        t.pid = proc_time.index(min(proc_time))
+        t.start = max(proc_time[t.pid], t.r)
+        proc_time[t.pid] = t.start + t.p
     return x.tasks
+
+
+def plot_schedule(tasks):
+    """ Display scheduling Gantt chart.
+    """
+    X = [(t.start, t.start + t.p) for t in tasks]
+    Y = [(t.pid, t.pid) for t in tasks]
+
+    for x, y in zip(X, Y):
+        plt.plot(x, y, marker="o")
+
+    plt.show()
+
+
+def main(opts):
+    scheduled = schedule(Instance.from_file(opts.input))
+
+    delay = sum(t.delay() for t in scheduled)
+    print(f"Total delay: {delay}")
+
+    if opts.plot:
+        plot_schedule(scheduled)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--M", type=int, help="number of the machines")
     parser.add_argument("input", help="input file path")
-    opts = parser.parse_args()
-
-    x = read_instance(opts.input)
-    x.M = opts.M
-
-    solution = schedule(x)
-    tasks_proc_map = {i: [t for t in solution if t.procid == i] for i in range(x.M)}
-
-    total_delay = 0
-    for k, v in tasks_proc_map.items():
-        for t in v:
-            total_delay += max(0, t.start + t.p - t.d)
-    print(total_delay)
-
-    for k, v in tasks_proc_map.items():
-        X = [(t.start, t.start + t.p) for t in v]
-        Y = [(k, k) for t in v]
-        for x, y in zip(X, Y):
-            plt.plot(x, y, marker="o")
-
-    plt.title(f"total delay: {total_delay}")
-    plt.show()
+    parser.add_argument("--plot", action="store_true", help="show Gantt chart")
+    main(parser.parse_args())
