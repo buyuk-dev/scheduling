@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import sys
 import argparse
 from matplotlib import pyplot as plt
 
@@ -44,11 +45,10 @@ class Instance:
         self.tasks = tasks
 
     @classmethod
-    def from_file(cls, path):
-        with open(path, "r") as f:
-            lines = f.readlines()
-            tasks = [Task.from_string(l) for l in lines[1:]]
-            return cls(int(lines[0]), tasks)
+    def from_file(cls, file_):
+        n, m = [int(x) for x in file_.readline().split()]
+        tasks = [Task.from_string(file_.readline()) for i in range(n)]
+        return cls(m, tasks)
 
 
 def schedule(x):
@@ -76,6 +76,7 @@ def plot_schedule(tasks):
 
 def main(opts):
     scheduled = schedule(Instance.from_file(opts.input))
+    opts.input.close()
 
     delay = sum(t.delay() for t in scheduled)
     print(f"Total delay: {delay}")
@@ -86,6 +87,14 @@ def main(opts):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("input", help="input file path")
+
+    parser.add_argument(
+        "input",
+        type=argparse.FileType("r"),
+        nargs="?",
+        default=sys.stdin,
+        help="input file path. stdin will be used if ommited",
+    )
+
     parser.add_argument("--plot", action="store_true", help="show Gantt chart")
     main(parser.parse_args())

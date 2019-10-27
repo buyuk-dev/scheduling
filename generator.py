@@ -39,7 +39,7 @@ def main(opts):
     """
     tasks = [t for t in random_tasks_generator(opts)]
 
-    print(f"{opts.m}")
+    print(f"{len(tasks)} {opts.m}")
     for t in tasks:
         print(f"{t.r} {t.p} {t.d}")
 
