@@ -26,9 +26,7 @@ def read_instance(path):
         lines = f.readlines()
         x = Instance()
         x.n = int(lines[0])
-        x.tasks = [
-            Task(l) for l in lines[1:]
-        ]
+        x.tasks = [Task(l) for l in lines[1:]]
         return x
 
 
@@ -42,7 +40,7 @@ def schedule(x):
     return x.tasks
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--M", type=int, help="number of the machines")
     parser.add_argument("input", help="input file path")
@@ -52,10 +50,7 @@ if __name__ == '__main__':
     x.M = opts.M
 
     solution = schedule(x)
-    tasks_proc_map = {
-        i: [t for t in solution if t.procid == i]
-        for i in range(x.M)
-    }
+    tasks_proc_map = {i: [t for t in solution if t.procid == i] for i in range(x.M)}
 
     total_delay = 0
     for k, v in tasks_proc_map.items():
@@ -71,5 +66,3 @@ if __name__ == '__main__':
 
     plt.title(f"total delay: {total_delay}")
     plt.show()
-
-

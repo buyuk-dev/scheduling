@@ -7,53 +7,52 @@ from matplotlib import pyplot
 
 
 def random_tasks_generator(n, rmin, dmax, pmax):
-    ''' random tasks generator
-    '''
+    """ random tasks generator
+    """
     for i in range(n):
         p = random.randint(1, pmax)
         r = random.randint(rmin, dmax - p)
 
-        margin = int((r + p) * 1.25)
-        d = random.randint(r + p, min(dmax, margin))
+        dmax = min(dmax, int((r + p) * 1.25))
+        d = random.randint(r + p, dmax)
 
-        yield p, r, d
+        yield r, p, d
 
 
 def plot(tasks):
-    ''' show tasks on a graph
-    '''
-    for k, (p, r, d) in enumerate(tasks):
-        x = [r, r+p, d]
-        y = [k, k, k]
+    """ show tasks on a graph
+    """
+    for k, (r, p, d) in enumerate(tasks):
+        x = [r, r + p, d]
+        y = [k] * len(x)
         pyplot.plot(x, y, marker="o")
     pyplot.show()
-   
+
 
 def main(opts):
-    ''' generate random tasks for the given parameters
-    '''
+    """ generate random tasks for the given parameters
+    """
     gen = random_tasks_generator(opts.n, opts.rmin, opts.dmax, opts.pmax)
     tasks = [t for t in gen]
 
     print(opts.n)
     for t in tasks:
-        print(f"{t.r} {t.p} {t.d}")
+        print(f"{t[0]} {t[1]} {t[2]}")
 
     if opts.plot:
         plot(tasks)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, help="number of tasks")
     parser.add_argument("--rmin", type=int, help="lower ready time limit")
     parser.add_argument("--dmax", type=int, help="upper due time limit")
     parser.add_argument("--pmax", type=int, help="max task length")
-    parser.add_argument("--plot", action='store_true', help="plot generated tasks")
+    parser.add_argument("--plot", action="store_true", help="plot generated tasks")
     opts = parser.parse_args()
 
     if opts.pmax is None:
         opts.pmax = opts.dmax
 
     main(opts)
-
