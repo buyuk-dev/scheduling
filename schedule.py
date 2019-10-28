@@ -6,6 +6,12 @@ import argparse
 from pprint import pprint
 from matplotlib import pyplot as plt
 
+import greedy
+import smart
+
+
+schedule = greedy.schedule
+
 
 class Task:
     """ Task consists of:
@@ -61,17 +67,6 @@ class Instance:
         n, m = [int(x) for x in file_.readline().split()]
         tasks = [Task.from_string(file_.readline()) for i in range(n)]
         return cls(m, tasks)
-
-
-def schedule(x):
-    """ Greedy scheduling in ready time order.
-    """
-    proc_time = [0] * x.m
-    for t in sorted(x.tasks, key=lambda t: t.r):
-        t.pid = proc_time.index(min(proc_time))
-        t.start = max(proc_time[t.pid], t.r)
-        proc_time[t.pid] = t.start + t.p
-    return x.tasks
 
 
 def plot_schedule(tasks):
