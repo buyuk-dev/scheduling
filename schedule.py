@@ -8,7 +8,8 @@ from matplotlib import pyplot as plt
 
 from instance import Instance
 from greedy import schedule
-#from smart import schedule
+
+# from smart import schedule
 
 
 def plot_schedule(tasks):

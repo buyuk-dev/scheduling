@@ -8,7 +8,7 @@ def random_order(n):
     """ Generate random permutation of integers <0..n>.
         Uses sort with random key value method.
     """
-    keys = [random.randint(0, n-1) for _ in range(n)]
+    keys = [random.randint(0, n - 1) for _ in range(n)]
     ids = list(range(n))
     ids.sort(key=lambda x: keys[x])
     return ids
@@ -19,10 +19,7 @@ def randomized_solution(m, n):
         random tasks to random processors.
     """
     return [
-        (
-            random.randint(0, m-1),  # random PID
-            task_id             # TID in randomized order
-        )
+        (random.randint(0, m - 1), task_id)
         for task_id in random_order(n)
     ]
 
@@ -85,10 +82,9 @@ def schedule(x):
         new_population.extend(population[:KEEP_BEST])
 
         # generate children
-        new_population.extend([
-            create_child(population)
-            for _ in range(x.n - KEEP_BEST)
-        ])
+        new_population.extend(
+            [create_child(population) for _ in range(x.n - KEEP_BEST)]
+        )
 
         # introduce mutations
         for _ in range(MUTATIONS):

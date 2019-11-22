@@ -9,7 +9,6 @@ from matplotlib import pyplot
 from task import Task
 
 
-
 def random_tasks_generator(opts):
     """ random tasks generator
     """
