@@ -44,4 +44,16 @@ Zaimplementowana została zachłanna heurystyka:
     3. Zadania przydzielane są kolejno do najbliższego wolnego procesora.
     4. Obliczane jest summaryczne opóźnienie wszystkich zadań.
 
+## Algorytm genetyczny
+
+<something something bla bla>
+
+
+## TODO
+
++ Implement crossover
++ Implement selection of pairs for crossovers
++ Implement mutations
++ Design automatic algorithm quality tests
++ Assign scheduling params after computing best genetic solution
 
