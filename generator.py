@@ -6,8 +6,8 @@ import random
 from collections import namedtuple
 from matplotlib import pyplot
 
+from task import Task
 
-Task = namedtuple("Task", ["r", "p", "d"])
 
 
 def random_tasks_generator(opts):
