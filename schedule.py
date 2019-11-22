@@ -26,6 +26,9 @@ def plot_schedule(tasks):
 def print_schedule(tasks):
     """ Print scheduling.
     """
+    delay = sum(t.delay() for t in tasks)
+    print(f"Total delay: {delay}")
+
     proc_to_tasks = {}
     for t in tasks:
         if t.pid not in proc_to_tasks:
@@ -42,15 +45,16 @@ def print_schedule(tasks):
 def main(opts):
     """ Main.
     """
-    scheduled = schedule(Instance.from_file(opts.input))
-    opts.input.close()
-
-    delay = sum(t.delay() for t in scheduled)
-    print(f"Total delay: {delay}")
-
-    print_schedule(scheduled)
-    if opts.plot:
-        plot_schedule(scheduled)
+    try:
+        scheduled = schedule(Instance.from_file(opts.input))
+        opts.input.close()
+        print_schedule(scheduled)
+        if opts.plot:
+            plot_schedule(scheduled)
+    except Exception as e:
+        sys.stderr.write(f"Error: {e}")
+    finally:
+        opts.input.close()
 
 
 if __name__ == "__main__":
