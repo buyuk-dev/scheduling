@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 
@@ -10,4 +11,3 @@ def schedule(x):
         t.start = max(proc_time[t.pid], t.r)
         proc_time[t.pid] = t.start + t.p
     return x.tasks
-
