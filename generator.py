@@ -13,13 +13,10 @@ def random_tasks_generator(opts):
     """ random tasks generator
     """
     for i in range(opts.n):
-        p = random.randint(1, opts.pmax)
-        r = random.randint(0, opts.dmax - p)
-
-        dmax = min(opts.dmax, int((r + p) * 1.25))
-        d = random.randint(r + p, opts.dmax)
-
-        yield Task(r, p, d)
+        p = random.randint(int(0.25 * opts.pmax), opts.pmax)
+        r = random.randint(0, int(0.5 * opts.pmax))
+        d = random.randint(r + p, r + int(1.5 * p))
+        yield Task(p, r, d)
 
 
 def plot(tasks):
@@ -38,9 +35,9 @@ def main(opts):
     """
     tasks = [t for t in random_tasks_generator(opts)]
 
-    print(f"{len(tasks)} {opts.m}")
+    print(f"{len(tasks)}")
     for t in tasks:
-        print(f"{t.r} {t.p} {t.d}")
+        print(t)
 
     if opts.plot:
         plot(tasks)
@@ -49,7 +46,6 @@ def main(opts):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--n", type=int, help="number of tasks")
-    parser.add_argument("--dmax", type=int, help="upper due time limit")
     parser.add_argument("--m", type=int, help="processors number")
     parser.add_argument("--pmax", type=int, help="max task length")
     parser.add_argument("--plot", action="store_true", help="plot generated tasks")
