@@ -9,7 +9,7 @@ class Task:
         d - due time
     """
 
-    def __init__(self, r, p, d):
+    def __init__(self, p, r, d):
         """ Single task representation.
         """
         self.id = self.next_id()
