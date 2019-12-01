@@ -22,6 +22,7 @@ class Instance:
     def from_file(cls, file_):
         """ Create new instance from file.
         """
-        n, m = [int(x) for x in file_.readline().split()]
+        n = int(file_.readline())
+        m = 4
         tasks = [Task.from_string(file_.readline()) for i in range(n)]
         return cls(m, tasks)
