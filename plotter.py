@@ -34,9 +34,9 @@ def main(args):
         plot_scheduling(instance, args.scheduling)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--instance", help="instance filename")
     parser.add_argument("--scheduling", help="scheduling filename")
     args = parser.parse_args()
-    main(args) 
+    main(args)

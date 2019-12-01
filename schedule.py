@@ -17,7 +17,7 @@ schedulers = {
     "ReadyFirst": ready_first,
     "DueFirst": due_first,
     "Reference": criterium,
-    "Genetic": smart
+    "Genetic": smart,
 }
 
 
@@ -82,6 +82,6 @@ if __name__ == "__main__":
         "--algorithm",
         choices=["ReadyFirst", "DueFirst", "Genetic", "Reference"],
         default="DueFirst",
-        help="Scheduling algorithm"
+        help="Scheduling algorithm",
     )
     main(parser.parse_args())

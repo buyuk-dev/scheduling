@@ -18,10 +18,7 @@ def randomized_solution(m, n):
     """ Generate random solution candidate by assigning
         random tasks to random processors.
     """
-    return [
-        (random.randint(0, m - 1), task_id)
-        for task_id in random_order(n)
-    ]
+    return [(random.randint(0, m - 1), task_id) for task_id in random_order(n)]
 
 
 def fitness(scheduling, tasks, m):
@@ -51,8 +48,8 @@ def apply_scheduling(tasks, scheduling):
 def select_pair(n):
     """ Select pair with linear preference for lower indexes.
     """
-    x = int(random.triangular(0, n-1, 0))
-    y = int(random.triangular(0, n-1, 0))
+    x = int(random.triangular(0, n - 1, 0))
+    y = int(random.triangular(0, n - 1, 0))
     return x, y
 
 
@@ -62,8 +59,10 @@ def cross(a, b):
     mask = [random.choice("ab") for _ in a]
     child = []
     for x, y in zip(a, b):
-        if mask[x[1]] == "b": child.append(x)
-        if mask[y[1]] == "a": child.append(y)
+        if mask[x[1]] == "b":
+            child.append(x)
+        if mask[y[1]] == "a":
+            child.append(y)
     return child
 
 
@@ -88,14 +87,14 @@ def mutate(individual, m):
 
         if random.random() > 0.5:
             # alternate PID
-            gid = random.randint(0, len(individual)-1)
+            gid = random.randint(0, len(individual) - 1)
             _, tid = individual[gid]
             individual[gid] = random.randint(0, 3), tid
 
         else:
             # swap two genes
-            ida = random.randint(0, len(individual)-1)
-            idb = random.randint(0, len(individual)-1)
+            ida = random.randint(0, len(individual) - 1)
+            idb = random.randint(0, len(individual) - 1)
             individual[ida], individual[idb] = individual[idb], individual[ida]
 
     return individual
@@ -118,23 +117,17 @@ def schedule(x):
         new_population = []
 
         # promote top candidates to the next generation
-        population = [
-            x for x, y in sorted(
-                zip(population, scores),
-                key=lambda p: p[1]
-            )
-        ]
+        population = [x for x, y in sorted(zip(population, scores), key=lambda p: p[1])]
         new_population.extend(population[:KEEP_BEST])
 
         # generate children
-        new_population.extend([
-            create_child(population)
-            for _ in range(x.n - KEEP_BEST)
-        ])
+        new_population.extend(
+            [create_child(population) for _ in range(x.n - KEEP_BEST)]
+        )
 
         # introduce mutations
         for _ in range(MUTATIONS):
-            idx = random.randint(0, len(new_population)-1)
+            idx = random.randint(0, len(new_population) - 1)
             new_population[idx] = mutate(new_population[idx], x.m)
 
         # kill old population
@@ -160,9 +153,6 @@ def _schedule(x):
 
     child = cross(a, b)
     score_child = fitness(child, x.tasks, x.m)
-   
+
     print(f"CHILD SCORE: {score_child}")
     return apply_scheduling(x.tasks, child)
-
-
-
