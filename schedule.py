@@ -7,9 +7,18 @@ from pprint import pprint
 from matplotlib import pyplot as plt
 
 from instance import Instance
-from greedy import schedule
 
-# from smart import schedule
+import ready_first
+import due_first
+import criterium
+import smart
+
+schedulers = {
+    "ReadyFirst": ready_first,
+    "DueFirst": due_first,
+    "Reference": criterium,
+    "Genetic": smart
+}
 
 
 def plot_schedule(tasks):
@@ -17,10 +26,8 @@ def plot_schedule(tasks):
     """
     X = [(t.start, t.start + t.p) for t in tasks]
     Y = [(t.pid, t.pid) for t in tasks]
-
     for x, y in zip(X, Y):
         plt.plot(x, y, marker="o")
-
     plt.show()
 
 
@@ -28,8 +35,6 @@ def print_schedule(tasks):
     """ Print scheduling.
     """
     delay = sum(t.delay() for t in tasks)
-    print(f"Total delay: {delay}")
-
     proc_to_tasks = {}
     for t in tasks:
         if t.pid not in proc_to_tasks:
@@ -40,20 +45,25 @@ def print_schedule(tasks):
     for pid in proc_to_tasks:
         proc_to_tasks[pid] = sorted(proc_to_tasks[pid], key=lambda t: t.start)
 
-    pprint(proc_to_tasks)
+    print(f"{delay}")
+    for pid, assigned_tasks in proc_to_tasks.items():
+        print(" ".join([str(t.id + 1) for t in assigned_tasks]))
 
 
 def main(opts):
     """ Main.
     """
     try:
-        scheduled = schedule(Instance.from_file(opts.input))
+        scheduled = schedulers[opts.algorithm].schedule(Instance.from_file(opts.input))
         opts.input.close()
         print_schedule(scheduled)
+
         if opts.plot:
             plot_schedule(scheduled)
     except Exception as e:
         sys.stderr.write(f"Error: {e}")
+        opts.input.close()
+        raise
     finally:
         opts.input.close()
 
@@ -68,4 +78,10 @@ if __name__ == "__main__":
         help="input file path. stdin will be used if ommited",
     )
     parser.add_argument("--plot", action="store_true", help="show Gantt chart")
+    parser.add_argument(
+        "--algorithm",
+        choices=["ReadyFirst", "DueFirst", "Genetic", "Reference"],
+        default="DueFirst",
+        help="Scheduling algorithm"
+    )
     main(parser.parse_args())
