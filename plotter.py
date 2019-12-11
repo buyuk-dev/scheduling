@@ -22,6 +22,13 @@ def plot_scheduling(instance, scheduling_path):
     pass
 
 
+def validate(instance, scheduling):
+    """ Compute total delay for the given
+        (instance, solution) pair.
+    """
+    raise NotImplemented()
+
+
 def main(args):
     instance = None
     with open(args.instance, "r") as instance_file:

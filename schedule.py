@@ -8,16 +8,14 @@ from matplotlib import pyplot as plt
 
 from instance import Instance
 
-import ready_first
-import due_first
-import criterium
+import simple
 import smart
 
 schedulers = {
-    "ReadyFirst": ready_first,
-    "DueFirst": due_first,
-    "Reference": criterium,
-    "Genetic": smart,
+    "fifo": simple.fifo_scheduler,
+    "urgent": simple.urgent_scheduler,
+    "ref": simple.reference_scheduler,
+    "genetic": smart.schedule,
 }
 
 
@@ -54,7 +52,7 @@ def main(opts):
     """ Main.
     """
     try:
-        scheduled = schedulers[opts.algorithm].schedule(Instance.from_file(opts.input))
+        scheduled = schedulers[opts.algorithm](Instance.from_file(opts.input))
         opts.input.close()
         print_schedule(scheduled)
 
@@ -80,8 +78,8 @@ if __name__ == "__main__":
     parser.add_argument("--plot", action="store_true", help="show Gantt chart")
     parser.add_argument(
         "--algorithm",
-        choices=["ReadyFirst", "DueFirst", "Genetic", "Reference"],
-        default="DueFirst",
+        choices=["fifo", "urgent", "genetic", "ref"],
+        default="urgent",
         help="Scheduling algorithm",
     )
     main(parser.parse_args())
