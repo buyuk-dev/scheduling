@@ -25,6 +25,7 @@ def compute_scheduling_value(inst, scheduling):
             inst.tasks[tid].start = start
             inst.tasks[tid].pid = pid
             total_delay += inst.tasks[tid].delay()
+
     return total_delay
 
 

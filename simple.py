@@ -10,9 +10,11 @@ def urgent_scheduler(x):
     """ Greedy scheduling in ready time order.
     """
     proc_time = [0] * x.m
+    sort_key = iter(range(x.n))
     for t in sorted(x.tasks, key=lambda t: t.d):
         t.pid = proc_time.index(min(proc_time))
         t.start = max(proc_time[t.pid], t.r)
+        t.sort_key = next(sort_key)
         proc_time[t.pid] = t.start + t.p
     return x.tasks
 
@@ -22,9 +24,11 @@ def fifo_scheduler(x):
     """ Greedy scheduling in ready time order.
     """
     proc_time = [0] * x.m
-    for t in sorted(x.tasks, key=lambda t: t.r):
+    sort_key = iter(range(x.n))
+    for t in sorted(x.tasks, key=lambda a: a.r):
         t.pid = proc_time.index(min(proc_time))
         t.start = max(proc_time[t.pid], t.r)
+        t.sort_key = next(sort_key)
         proc_time[t.pid] = t.start + t.p
     return x.tasks
 
@@ -36,8 +40,10 @@ def reference_scheduler(x):
     """
     proc_time = [0] * x.m
     tpm = math.ceil(x.n / x.m)
+    sort_key = iter(range(x.n))
     for i, t in enumerate(x.tasks):
         t.pid = int(i / tpm)
         t.start = max(proc_time[t.pid], t.r)
+        t.sort_key = next(sort_key)
         proc_time[t.pid] = t.start + t.p
     return x.tasks

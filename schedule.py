@@ -41,7 +41,7 @@ def print_schedule(tasks):
             proc_to_tasks[t.pid].append(t)
 
     for pid in proc_to_tasks:
-        proc_to_tasks[pid] = sorted(proc_to_tasks[pid], key=lambda t: t.start)
+        proc_to_tasks[pid] = sorted(proc_to_tasks[pid], key=lambda t: t.sort_key)
 
     print(f"{delay}")
     for pid, assigned_tasks in proc_to_tasks.items():
